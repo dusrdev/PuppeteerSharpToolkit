@@ -6,22 +6,17 @@ namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
     [Theory]
-    [InlineData(false, false)]
-    [InlineData(false, true)]
-    [InlineData(true, false)]
-    [InlineData(true, true)]
-    public async Task Languages_Plugin_Test(bool subsequentNavigation, bool isFrench) {
+    [InlineData(false, "")] // empty will default to "en-US"
+    [InlineData(false, "fr-FR")]
+    [InlineData(true, "")] // empty will default to "en-US"
+    [InlineData(true, "fr-FR")]
+    public async Task Languages_Plugin_Test(bool secondNavigation, string language) {
         var pluginManager = new PluginManager();
-        if (!isFrench) {
+        if (language.Length is 0) {
             pluginManager.Register(new LanguagesPlugin());
         } else {
             pluginManager.Register(new LanguagesPlugin("fr-FR"));
         }
-
-        string language = isFrench switch {
-            true => "fr-FR",
-            _ => "en-US"
-        };
 
         await using var browser = await pluginManager.LaunchAsync();
         var context = await browser.CreateBrowserContextAsync();
@@ -30,7 +25,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page, language);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page, language);
         }

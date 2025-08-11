@@ -5,10 +5,10 @@ namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 public partial class StealthPluginTests {
     [Theory]
     [InlineData(false, "navigator.webdriver")]
-    [InlineData(true, "navigator.webdriver")]
     [InlineData(false, "navigator.javaEnabled()")]
+    [InlineData(true, "navigator.webdriver")]
     [InlineData(true, "navigator.javaEnabled()")]
-    public async Task WebDriver_Plugin_Test(bool subsequentNavigation, string expression) {
+    public async Task WebDriver_Plugin_Test(bool secondNavigation, string expression) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new WebDriverPlugin());
 
@@ -19,7 +19,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page, expression);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page, expression);
         }

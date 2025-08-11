@@ -6,7 +6,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Codec_Plugin_SupportsCodec(bool subsequentNavigation) {
+    public async Task Codec_Plugin_SupportsCodec(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new CodecPlugin());
 
@@ -17,7 +17,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }
@@ -42,7 +42,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Codec_Plugin_ShouldNot_LeakModifications(bool subsequentNavigation) {
+    public async Task Codec_Plugin_ShouldNot_LeakModifications(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new CodecPlugin());
 
@@ -53,7 +53,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }

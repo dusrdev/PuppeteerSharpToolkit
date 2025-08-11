@@ -1,8 +1,6 @@
 ﻿using PuppeteerSharpToolkit.Plugins;
 using PuppeteerSharpToolkit.Plugins.Recaptcha;
 
-using PuppeteerSharp;
-
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
@@ -41,7 +39,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Stealth_Plugin_PlusStandardEvasions_ShouldNot_BeDetected(bool subsequentNavigation) {
+    public async Task Stealth_Plugin_PlusStandardEvasions_ShouldNot_BeDetected(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(Stealth.GetStandardEvasions());
 
@@ -54,7 +52,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }

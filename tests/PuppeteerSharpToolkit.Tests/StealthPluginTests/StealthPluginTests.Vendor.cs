@@ -6,7 +6,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Vendor_Plugin_Test(bool subsequentNavigation) {
+    public async Task Vendor_Plugin_Test(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new VendorPlugin());
 
@@ -17,7 +17,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }

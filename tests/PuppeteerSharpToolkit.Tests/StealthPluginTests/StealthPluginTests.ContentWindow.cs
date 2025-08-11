@@ -8,7 +8,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ContentWindow_Plugin_IFrame_Should_BeObject(bool subsequentNavigation) {
+    public async Task ContentWindow_Plugin_IFrame_Should_BeObject(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new ContentWindowPlugin());
 
@@ -19,7 +19,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }
@@ -33,7 +33,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ContentWindow_Plugin_ShouldNot_BreakIFrames(bool subsequentNavigation) {
+    public async Task ContentWindow_Plugin_ShouldNot_BreakIFrames(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new ContentWindowPlugin());
 
@@ -44,7 +44,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }
@@ -85,7 +85,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ContentWindow_Plugin_Should_CoverAllFrames(bool subsequentNavigation) {
+    public async Task ContentWindow_Plugin_Should_CoverAllFrames(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new ContentWindowPlugin());
 
@@ -96,7 +96,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }
@@ -140,7 +140,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ContentWindow_Plugin_Should_EmulateFeatures(bool subsequentNavigation) {
+    public async Task ContentWindow_Plugin_Should_EmulateFeatures(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new ContentWindowPlugin());
 
@@ -151,7 +151,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("https://google.com");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }

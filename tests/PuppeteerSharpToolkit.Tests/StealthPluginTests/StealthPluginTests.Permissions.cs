@@ -6,7 +6,7 @@ public partial class StealthPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Permissions_Plugin_ShouldBe_DeniedInHttpSite(bool subsequentNavigation) {
+    public async Task Permissions_Plugin_ShouldBe_DeniedInHttpSite(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new PermissionsPlugin());
 
@@ -17,7 +17,7 @@ public partial class StealthPluginTests {
         await page.GoToAsync("http://info.cern.ch/");
         await Test(page);
 
-        if (subsequentNavigation) {
+        if (secondNavigation) {
             await page.ReloadAsync();
             await Test(page);
         }
