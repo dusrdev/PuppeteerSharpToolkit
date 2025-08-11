@@ -6,17 +6,13 @@ namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
     [Theory]
-    [InlineData(false, "")] // empty will default to "en-US"
+    [InlineData(false, "en-US")]
     [InlineData(false, "fr-FR")]
-    [InlineData(true, "")] // empty will default to "en-US"
+    [InlineData(true, "en-US")]
     [InlineData(true, "fr-FR")]
     public async Task Languages_Plugin_Test(bool secondNavigation, string language) {
         var pluginManager = new PluginManager();
-        if (language.Length is 0) {
-            pluginManager.Register(new LanguagesPlugin());
-        } else {
-            pluginManager.Register(new LanguagesPlugin("fr-FR"));
-        }
+        pluginManager.Register(new LanguagesPlugin(language));
 
         await using var browser = await pluginManager.LaunchAsync();
         var context = await browser.CreateBrowserContextAsync();
