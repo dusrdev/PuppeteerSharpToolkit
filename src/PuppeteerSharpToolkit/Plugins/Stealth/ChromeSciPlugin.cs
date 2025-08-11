@@ -15,6 +15,7 @@ public class ChromeSciPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.SCI).ConfigureAwait(false);
+            await page.EvaluateExpressionAsync(Scripts.SCI).ConfigureAwait(false);
         }
     }
 }

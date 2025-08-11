@@ -31,6 +31,7 @@ public class HardwareConcurrencyPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin
         if (target.Type == TargetType.Page) {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
+            await page.EvaluateFunctionOnNewDocumentAsync(Scripts.HardwareConcurrency, ConcurrencyLevel).ConfigureAwait(false);
             await page.EvaluateFunctionAsync(Scripts.HardwareConcurrency, ConcurrencyLevel).ConfigureAwait(false);
         }
     }

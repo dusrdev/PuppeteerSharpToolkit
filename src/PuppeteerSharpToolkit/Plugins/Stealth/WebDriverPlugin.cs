@@ -38,6 +38,7 @@ public class WebDriverPlugin : PuppeteerPlugin, IBeforeLaunchPlugin, IOnTargetCr
         if (target.Type == TargetType.Page) {
             var page = await target.PageAsync().ConfigureAwait(false);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.WebDriver).ConfigureAwait(false);
+            await page.EvaluateExpressionAsync(Scripts.WebDriver).ConfigureAwait(false);
         }
     }
 }

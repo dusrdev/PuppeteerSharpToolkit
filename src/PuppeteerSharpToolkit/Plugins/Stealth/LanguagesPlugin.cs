@@ -34,6 +34,7 @@ public class LanguagesPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateFunctionOnNewDocumentAsync(Scripts.Language, _languages).ConfigureAwait(false);
+            await page.EvaluateFunctionAsync(Scripts.Language, _languages).ConfigureAwait(false);
         }
     }
 }
