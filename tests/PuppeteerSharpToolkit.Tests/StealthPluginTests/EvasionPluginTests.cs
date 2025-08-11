@@ -2,7 +2,7 @@
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class EvasionPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

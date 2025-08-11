@@ -4,7 +4,7 @@ using PuppeteerSharpToolkit.Plugins;
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class ChromeSciPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

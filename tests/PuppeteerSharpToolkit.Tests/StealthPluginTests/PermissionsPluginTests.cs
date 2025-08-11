@@ -2,19 +2,19 @@
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class PermissionsPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Vendor_Plugin_Test(bool secondNavigation) {
+    public async Task Permissions_Plugin_ShouldBe_DeniedInHttpSite(bool secondNavigation) {
         var pluginManager = new PluginManager();
-        pluginManager.Register(new VendorPlugin());
+        pluginManager.Register(new PermissionsPlugin());
 
         await using var browser = await pluginManager.LaunchAsync();
         var context = await browser.CreateBrowserContextAsync();
         await using var page = await context.NewPageAsync();
 
-        await page.GoToAsync("https://google.com");
+        await page.GoToAsync("http://info.cern.ch/");
         await Test(page);
 
         if (secondNavigation) {
@@ -23,8 +23,11 @@ public partial class StealthPluginTests {
         }
 
         static async Task Test(IPage page) {
-            var vendor = await page.EvaluateExpressionAsync<string>("navigator.vendor");
-            Assert.Equal("Google Inc.", vendor);
+            var finger = await page.GetFingerPrint();
+            var s = finger.ToString(); // for debug
+
+            Assert.Equal("prompt", finger.GetProperty("permissions").GetProperty("state").GetString());
+            Assert.Equal("default", finger.GetProperty("permissions").GetProperty("permission").GetString());
         }
     }
 }

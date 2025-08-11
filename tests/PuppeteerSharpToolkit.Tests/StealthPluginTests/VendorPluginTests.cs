@@ -2,13 +2,13 @@
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class VendorPluginTests {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task UserAgent_Plugin_Test(bool secondNavigation) {
+    public async Task Vendor_Plugin_Test(bool secondNavigation) {
         var pluginManager = new PluginManager();
-        pluginManager.Register(new UserAgentPlugin());
+        pluginManager.Register(new VendorPlugin());
 
         await using var browser = await pluginManager.LaunchAsync();
         var context = await browser.CreateBrowserContextAsync();
@@ -23,8 +23,8 @@ public partial class StealthPluginTests {
         }
 
         static async Task Test(IPage page) {
-            var finger = await page.GetFingerPrint();
-            Assert.DoesNotContain("HeadlessChrome", finger.GetProperty("userAgent").GetString());
+            var vendor = await page.EvaluateExpressionAsync<string>("navigator.vendor");
+            Assert.Equal("Google Inc.", vendor);
         }
     }
 }

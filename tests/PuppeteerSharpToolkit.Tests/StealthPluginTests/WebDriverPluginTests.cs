@@ -2,7 +2,7 @@
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class WebDriverPluginTests {
     [Theory]
     [InlineData(false, "navigator.webdriver")]
     [InlineData(false, "navigator.javaEnabled()")]

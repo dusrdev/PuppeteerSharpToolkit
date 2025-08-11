@@ -4,7 +4,7 @@ using PuppeteerSharpToolkit.Plugins;
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class LanguagesPluginTests {
     [Theory]
     [InlineData(false, "en-US")]
     [InlineData(false, "fr-FR")]

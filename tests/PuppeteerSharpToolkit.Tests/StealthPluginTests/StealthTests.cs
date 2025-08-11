@@ -3,7 +3,7 @@ using PuppeteerSharpToolkit.Plugins.Recaptcha;
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class StealthTests {
     [Fact]
     public async Task Stealth_Plugin_CannotInject_Utils_MoreThanOnce() {
         await using var browser = await Puppeteer.LaunchAsync(new() {
