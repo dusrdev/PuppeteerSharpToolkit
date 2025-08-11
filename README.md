@@ -91,9 +91,11 @@ plugin.UserAgentTransformer = ua => "whatever";
 
 ### [RecaptchaPlugin](src/PuppeteerSharpToolkit/Plugins/Recaptcha/RecapchaPlugin.cs)
 
-RecaptchaPlugin is used in conjunction with Recaptcha solving providers, at this state [AntiCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/AntiCaptcha/AntiCaptchaProvider.cs) and [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/TwoCaptcha/TwoCaptchaProvider.cs) are supported, but this is extensible so you add your own.
+RecaptchaPlugin is used in conjunction with Recaptcha solving providers, at this state [AntiCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/AntiCaptcha/AntiCaptchaProvider.cs) and [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/TwoCaptchaProvider.cs) are supported, but this is extensible so you add your own.
 
 The following is an example with `AntiCaptcha`
+
+- `Anti-Captcha` provider is disabled pending better solution for their requirement to get recaptcha key.
 
 ```csharp
 // have HttpClient instance ready (it is used to send the requests)
@@ -117,7 +119,7 @@ await page.GoToAsync("https://patrickhlauke.github.io/recaptcha/");
 await plugin.SolveCaptchaAsync(page); // Also accepts proxyStr and cancellationToken.
 ```
 
-For [2captcha](https://2captcha.com/ru) simply use the [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/TwoCaptcha/TwoCaptchaProvider.cs) instead.
+For [2captcha](https://2captcha.com/ru) simply use the [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/TwoCaptcha/TwoCaptchaProvider.cs) instead.
 
 ### [BlockResourcesPlugin](src/PuppeteerSharpToolkit/Plugins/BlockResourcesPlugin.cs)
 
@@ -162,8 +164,8 @@ To set the API keys, `dotnet` user secrets is used, it must be configured when i
 dotnet user-secrets set [secretName] [secretValue]
 ```
 
-- For [AntiCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/AntiCaptcha/AntiCaptchaProvider.cs): `secretName = "AntiCaptchaKey"`
-- For [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/TwoCaptcha/TwoCaptchaProvider.cs): `secretName = "TwoCaptchaKey"`
+- For [AntiCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/AntiCaptcha/AntiCaptchaProvider.cs): `secretName = "AntiCaptchaKey"`
+- For [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/TwoCaptcha/TwoCaptchaProvider.cs): `secretName = "TwoCaptchaKey"`
 
 All Recaptcha tests are marked as `Explicit` and will not execute when running the full test suite (unless specifically asked for), this is to avoid burning API usage.
 
