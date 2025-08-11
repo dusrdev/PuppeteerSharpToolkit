@@ -3,8 +3,10 @@
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
-    [Fact]
-    public async Task UserAgent_Plugin_Test() {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UserAgent_Plugin_Test(bool subsequentNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new UserAgentPlugin());
 
@@ -13,8 +15,16 @@ public partial class StealthPluginTests {
         await using var page = await context.NewPageAsync();
 
         await page.GoToAsync("https://google.com");
+        await Test(page);
 
-        var finger = await page.GetFingerPrint();
-        Assert.DoesNotContain("HeadlessChrome", finger.GetProperty("userAgent").GetString());
+        if (subsequentNavigation) {
+            await page.ReloadAsync();
+            await Test(page);
+        }
+
+        static async Task Test(IPage page) {
+            var finger = await page.GetFingerPrint();
+            Assert.DoesNotContain("HeadlessChrome", finger.GetProperty("userAgent").GetString());
+        }
     }
 }

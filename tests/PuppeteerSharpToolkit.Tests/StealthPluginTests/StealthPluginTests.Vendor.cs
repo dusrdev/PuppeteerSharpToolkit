@@ -3,8 +3,10 @@
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
-    [Fact]
-    public async Task Vendor_Plugin_Test() {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Vendor_Plugin_Test(bool subsequentNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new VendorPlugin());
 
@@ -13,8 +15,16 @@ public partial class StealthPluginTests {
         await using var page = await context.NewPageAsync();
 
         await page.GoToAsync("https://google.com");
+        await Test(page);
 
-        var vendor = await page.EvaluateExpressionAsync<string>("navigator.vendor");
-        Assert.Equal("Google Inc.", vendor);
+        if (subsequentNavigation) {
+            await page.ReloadAsync();
+            await Test(page);
+        }
+
+        static async Task Test(IPage page) {
+            var vendor = await page.EvaluateExpressionAsync<string>("navigator.vendor");
+            Assert.Equal("Google Inc.", vendor);
+        }
     }
 }

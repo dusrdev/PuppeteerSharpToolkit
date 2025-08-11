@@ -1,55 +1,52 @@
 ﻿using System.Text.Json;
+
 using PuppeteerSharpToolkit.Plugins;
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
-    [Fact]
-    public async Task Languages_Plugin_Test() {
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task Languages_Plugin_Test(bool subsequentNavigation, bool isFrench) {
         var pluginManager = new PluginManager();
-        pluginManager.Register(new LanguagesPlugin());
+        if (!isFrench) {
+            pluginManager.Register(new LanguagesPlugin());
+        } else {
+            pluginManager.Register(new LanguagesPlugin("fr-FR"));
+        }
+
+        string language = isFrench switch {
+            true => "fr-FR",
+            _ => "en-US"
+        };
 
         await using var browser = await pluginManager.LaunchAsync();
         var context = await browser.CreateBrowserContextAsync();
         await using var page = await context.NewPageAsync();
 
         await page.GoToAsync("https://google.com");
+        await Test(page, language);
 
-        var fingerPrint = await page.GetFingerPrint();
+        if (subsequentNavigation) {
+            await page.ReloadAsync();
+            await Test(page, language);
+        }
 
-        var text = fingerPrint.GetRawText(); // for debug
+        static async Task Test(IPage page, string containedLanguage) {
+            var fingerPrint = await page.GetFingerPrint();
 
-        var languagesJson = fingerPrint.GetProperty("languages").GetRawText();
+            var text = fingerPrint.GetRawText(); // for debug
 
-        var languages = JsonSerializer.Deserialize<string[]>(languagesJson);
+            var languagesJson = fingerPrint.GetProperty("languages").GetRawText();
 
-        Assert.NotNull(languages);
+            var languages = JsonSerializer.Deserialize<string[]>(languagesJson);
 
-        Assert.Contains("en-US", languages);
-    }
+            Assert.NotNull(languages);
 
-
-    [Fact]
-    public async Task Languages_Plugin_Should_WorkWithCustomSettings() {
-        var pluginManager = new PluginManager();
-        pluginManager.Register(new LanguagesPlugin("fr-FR"));
-
-        await using var browser = await pluginManager.LaunchAsync();
-        var context = await browser.CreateBrowserContextAsync();
-        await using var page = await context.NewPageAsync();
-
-        await page.GoToAsync("https://google.com");
-
-        var fingerPrint = await page.GetFingerPrint();
-
-        var text = fingerPrint.GetRawText(); // for debug
-
-        var languagesJson = fingerPrint.GetProperty("languages").GetRawText();
-
-        var languages = JsonSerializer.Deserialize<string[]>(languagesJson);
-
-        Assert.NotNull(languages);
-
-        Assert.Contains("en-US", languages);
+            Assert.Contains(containedLanguage, languages);
+        }
     }
 }

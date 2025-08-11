@@ -3,8 +3,12 @@
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
-    [Fact]
-    public async Task WebDriver_Plugin_Test() {
+    [Theory]
+    [InlineData(false, "navigator.webdriver")]
+    [InlineData(true, "navigator.webdriver")]
+    [InlineData(false, "navigator.javaEnabled()")]
+    [InlineData(true, "navigator.javaEnabled()")]
+    public async Task WebDriver_Plugin_Test(bool subsequentNavigation, string expression) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new WebDriverPlugin());
 
@@ -13,23 +17,16 @@ public partial class StealthPluginTests {
         await using var page = await context.NewPageAsync();
 
         await page.GoToAsync("https://google.com");
+        await Test(page, expression);
 
-        var driver = await page.EvaluateExpressionAsync<bool>("navigator.webdriver");
-        Assert.False(driver);
-    }
+        if (subsequentNavigation) {
+            await page.ReloadAsync();
+            await Test(page, expression);
+        }
 
-    [Fact]
-    public async Task WebDriver_Plugin_ShouldNot_KillOtherMethods() {
-        var pluginManager = new PluginManager();
-        pluginManager.Register(new WebDriverPlugin());
-
-        await using var browser = await pluginManager.LaunchAsync();
-        var context = await browser.CreateBrowserContextAsync();
-        await using var page = await context.NewPageAsync();
-
-        await page.GoToAsync("https://google.com");
-
-        var data = await page.EvaluateExpressionAsync<bool>("navigator.javaEnabled()");
-        Assert.False(data);
+        static async Task Test(IPage page, string expression) {
+            var data = await page.EvaluateExpressionAsync<bool>(expression);
+            Assert.False(data);
+        }
     }
 }

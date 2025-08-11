@@ -3,8 +3,10 @@
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
 public partial class StealthPluginTests {
-    [Fact]
-    public async Task Codec_Plugin_SupportsCodec() {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Codec_Plugin_SupportsCodec(bool subsequentNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new CodecPlugin());
 
@@ -13,23 +15,34 @@ public partial class StealthPluginTests {
         await using var page = await context.NewPageAsync();
 
         await page.GoToAsync("https://google.com");
-        var fingerPrint = await page.GetFingerPrint();
+        await Test(page);
 
-        var text = fingerPrint.GetRawText();
+        if (subsequentNavigation) {
+            await page.ReloadAsync();
+            await Test(page);
+        }
 
-        Assert.Equal("", fingerPrint.GetProperty("videoCodecs").GetProperty("ogg").GetString());
-        Assert.Equal("probably", fingerPrint.GetProperty("videoCodecs").GetProperty("h264").GetString());
-        Assert.Equal("probably", fingerPrint.GetProperty("videoCodecs").GetProperty("webm").GetString());
+        static async Task Test(IPage page) {
+            var fingerPrint = await page.GetFingerPrint();
 
-        Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("ogg").GetString());
-        Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("mp3").GetString());
-        Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("wav").GetString());
-        Assert.Equal("maybe", fingerPrint.GetProperty("audioCodecs").GetProperty("m4a").GetString());
-        Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("aac").GetString());
+            var text = fingerPrint.GetRawText();
+
+            Assert.Equal("", fingerPrint.GetProperty("videoCodecs").GetProperty("ogg").GetString());
+            Assert.Equal("probably", fingerPrint.GetProperty("videoCodecs").GetProperty("h264").GetString());
+            Assert.Equal("probably", fingerPrint.GetProperty("videoCodecs").GetProperty("webm").GetString());
+
+            Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("ogg").GetString());
+            Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("mp3").GetString());
+            Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("wav").GetString());
+            Assert.Equal("maybe", fingerPrint.GetProperty("audioCodecs").GetProperty("m4a").GetString());
+            Assert.Equal("probably", fingerPrint.GetProperty("audioCodecs").GetProperty("aac").GetString());
+        }
     }
 
-    [Fact]
-    public async Task Codec_Plugin_ShouldNot_LeakModifications() {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Codec_Plugin_ShouldNot_LeakModifications(bool subsequentNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(new CodecPlugin());
 
@@ -37,13 +50,23 @@ public partial class StealthPluginTests {
         var context = await browser.CreateBrowserContextAsync();
         await using var page = await context.NewPageAsync();
 
-        var canPlay =
-            await page.EvaluateFunctionAsync<string>(
-                "() => document.createElement('audio').canPlayType.toString()");
-        Assert.Equal("function canPlayType() { [native code] }", canPlay);
+        await page.GoToAsync("https://google.com");
+        await Test(page);
 
-        var canPlayHasName = await page.EvaluateFunctionAsync<string>(
-            "() => document.createElement('audio').canPlayType.name");
-        Assert.Equal("canPlayType", canPlayHasName);
+        if (subsequentNavigation) {
+            await page.ReloadAsync();
+            await Test(page);
+        }
+
+        static async Task Test(IPage page) {
+            var canPlay =
+                await page.EvaluateFunctionAsync<string>(
+                    "() => document.createElement('audio').canPlayType.toString()");
+            Assert.Equal("function canPlayType() { [native code] }", canPlay);
+
+            var canPlayHasName = await page.EvaluateFunctionAsync<string>(
+                "() => document.createElement('audio').canPlayType.name");
+            Assert.Equal("canPlayType", canPlayHasName);
+        }
     }
 }
