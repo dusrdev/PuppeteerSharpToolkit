@@ -91,11 +91,12 @@ plugin.UserAgentTransformer = ua => "whatever";
 
 ### [RecaptchaPlugin](src/PuppeteerSharpToolkit/Plugins/Recaptcha/RecapchaPlugin.cs)
 
+- `Anti-Captcha` provider is disabled pending better solution for their requirement to get recaptcha key.
+- `2Captcha` provider is disabled pending tests using their API to ensure stability.
+
 RecaptchaPlugin is used in conjunction with Recaptcha solving providers, at this state [AntiCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/AntiCaptcha/AntiCaptchaProvider.cs) and [TwoCaptchaProvider](src/PuppeteerSharpToolkit/Plugins/Recaptcha/Provider/TwoCaptchaProvider.cs) are supported, but this is extensible so you add your own.
 
 The following is an example with `AntiCaptcha`
-
-- `Anti-Captcha` provider is disabled pending better solution for their requirement to get recaptcha key.
 
 ```csharp
 // have HttpClient instance ready (it is used to send the requests)

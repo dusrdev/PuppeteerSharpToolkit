@@ -14,6 +14,7 @@ public class OutDimensionsPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
         if (target.Type == TargetType.Page) {
             var page = await target.PageAsync().ConfigureAwait(false);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Outdimensions).ConfigureAwait(false);
+            await page.EvaluateExpressionAsync(Scripts.Outdimensions).ConfigureAwait(false);
         }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using PuppeteerSharpToolkit.Plugins;
 using PuppeteerSharpToolkit.Plugins.Recaptcha;
 
-using PuppeteerSharp;
-
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
 
-public partial class StealthPluginTests {
+public class StealthTests {
     [Fact]
     public async Task Stealth_Plugin_CannotInject_Utils_MoreThanOnce() {
         await using var browser = await Puppeteer.LaunchAsync(new() {
@@ -38,8 +36,10 @@ public partial class StealthPluginTests {
         Assert.True(eventExecuted);
     }
 
-    [Fact]
-    public async Task Stealth_Plugin_PlusStandardEvasions_ShouldNot_BeDetected() {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Stealth_Plugin_PlusStandardEvasions_ShouldNot_BeDetected(bool secondNavigation) {
         var pluginManager = new PluginManager();
         pluginManager.Register(Stealth.GetStandardEvasions());
 
@@ -50,35 +50,28 @@ public partial class StealthPluginTests {
         await Task.Delay(500, TestContext.Current.CancellationToken);
 
         await page.GoToAsync("https://google.com");
+        await Test(page);
 
-        var webdriver = await page.EvaluateExpressionAsync<bool>("navigator.webdriver");
-        Assert.False(webdriver);
+        if (secondNavigation) {
+            await page.ReloadAsync();
+            await Test(page);
+        }
 
-        var headlessUserAgent = await page.EvaluateExpressionAsync<string>("window.navigator.userAgent");
-        Assert.DoesNotContain("Headless", headlessUserAgent);
+        static async Task Test(IPage page) {
+            var webdriver = await page.EvaluateExpressionAsync<bool>("navigator.webdriver");
+            Assert.False(webdriver);
 
-        var webDriverOverridden =
-            await page.EvaluateExpressionAsync<bool>(
-                "Object.getOwnPropertyDescriptor(navigator.__proto__, 'webdriver') !== undefined");
-        Assert.True(webDriverOverridden);
+            var headlessUserAgent = await page.EvaluateExpressionAsync<string>("window.navigator.userAgent");
+            Assert.DoesNotContain("Headless", headlessUserAgent);
 
-        var plugins = await page.EvaluateExpressionAsync<int>("navigator.plugins.length");
-        Assert.NotEqual(0, plugins);
-    }
+            var webDriverOverridden =
+                await page.EvaluateExpressionAsync<bool>(
+                    "Object.getOwnPropertyDescriptor(navigator.__proto__, 'webdriver') !== undefined");
+            Assert.True(webDriverOverridden);
 
-    [Fact]
-    public async Task Stealth_Plugin_LaunchTest() {
-        var pluginManager = new PluginManager();
-
-        await using var browser = await pluginManager.LaunchAsync();
-        var context = await browser.CreateBrowserContextAsync();
-        await using var page = await context.NewPageAsync();
-
-        await page.GoToAsync("https://bot.sannysoft.com");
-        await page.ScreenshotAsync("Stealth.png", new ScreenshotOptions() {
-            FullPage = true,
-            Type = ScreenshotType.Png,
-        });
+            var plugins = await page.EvaluateExpressionAsync<int>("navigator.plugins.length");
+            Assert.NotEqual(0, plugins);
+        }
     }
 
     [Fact]

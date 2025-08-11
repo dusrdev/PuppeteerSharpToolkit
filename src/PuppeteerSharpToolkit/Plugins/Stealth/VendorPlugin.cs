@@ -32,6 +32,7 @@ public class VendorPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateFunctionOnNewDocumentAsync(Scripts.Vendor, Vendor).ConfigureAwait(false);
+            await page.EvaluateFunctionAsync(Scripts.Vendor, Vendor).ConfigureAwait(false);
         }
     }
 }

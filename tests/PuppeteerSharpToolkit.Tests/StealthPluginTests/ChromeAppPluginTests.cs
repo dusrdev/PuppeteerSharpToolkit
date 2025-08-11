@@ -1,0 +1,54 @@
+﻿using System.Text.Json;
+
+using PuppeteerSharpToolkit.Plugins;
+
+namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
+
+public class ChromeAppPluginTests {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ChromeApp_Plugin_Test(bool secondNavigation) {
+        var pluginManager = new PluginManager();
+        pluginManager.Register(new ChromeAppPlugin());
+
+        await using var browser = await pluginManager.LaunchAsync();
+        var context = await browser.CreateBrowserContextAsync();
+        await using var page = await context.NewPageAsync();
+
+        await page.GoToAsync("https://google.com");
+        await Test(page);
+
+        if (secondNavigation) {
+            await page.ReloadAsync();
+            await Test(page);
+        }
+
+        static async Task Test(IPage page) {
+            var chrome = await page.EvaluateExpressionAsync<JsonElement>("window.chrome");
+
+            var app = await page.EvaluateExpressionAsync<JsonElement>("chrome.app");
+
+            var getIsInstalled = await page.EvaluateExpressionAsync<bool>("chrome.app.getIsInstalled()");
+            Assert.False(getIsInstalled);
+
+            var installState = await page.EvaluateExpressionAsync<JsonElement>("chrome.app.InstallState");
+            Assert.Equal("disabled", installState.GetProperty("DISABLED").GetString());
+            Assert.Equal("installed", installState.GetProperty("INSTALLED").GetString());
+            Assert.Equal("not_installed", installState.GetProperty("NOT_INSTALLED").GetString());
+
+            var runningState = await page.EvaluateExpressionAsync<JsonElement>("chrome.app.RunningState");
+            Assert.Equal("cannot_run", runningState.GetProperty("CANNOT_RUN").GetString());
+            Assert.Equal("ready_to_run", runningState.GetProperty("READY_TO_RUN").GetString());
+            Assert.Equal("running", runningState.GetProperty("RUNNING").GetString());
+
+            var details = await page.EvaluateExpressionAsync<object>("chrome.app.getDetails()");
+            Assert.Null(details);
+
+            var runningStateFunc = await page.EvaluateExpressionAsync<string>("chrome.app.runningState()");
+            Assert.Equal("cannot_run", runningStateFunc);
+
+            await Assert.ThrowsAsync<EvaluationFailedException>(async () => await page.EvaluateExpressionAsync("chrome.app.getDetails('foo')"));
+        }
+    }
+}
