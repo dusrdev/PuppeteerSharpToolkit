@@ -1,2 +1,1 @@
-TODO: Optimizations
 TODO: Get Recaptcha API keys to test
