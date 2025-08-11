@@ -1,3 +1,7 @@
+/*
+
+//TODO: Disabled pending tests
+
 using PuppeteerSharpToolkit.Plugins.Recaptcha;
 using PuppeteerSharpToolkit.Plugins.Recaptcha.TwoCaptcha;
 
@@ -62,3 +66,4 @@ public class TwoCaptchaPluginTests {
         Assert.Equal("Success!", elementProperty);
     }
 }
+*/

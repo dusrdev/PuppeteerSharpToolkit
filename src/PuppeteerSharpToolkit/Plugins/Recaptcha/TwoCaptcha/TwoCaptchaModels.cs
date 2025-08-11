@@ -1,4 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿/*
+
+//TODO: Disabled pending tests
+
+using System.Text.Json.Serialization;
 
 namespace PuppeteerSharpToolkit.Plugins.Recaptcha.TwoCaptcha;
 
@@ -19,3 +23,4 @@ public class TwoCaptchaResponse
     [JsonPropertyName("request")]
     public string Request { get; set; } = string.Empty;
 }
+*/
