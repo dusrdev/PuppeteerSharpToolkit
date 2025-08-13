@@ -13,7 +13,6 @@ public static class Stealth {
     /// <returns></returns>
     public static async Task RegisterUtilsAsync(IPage page) {
         await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Utils).ConfigureAwait(false);
-        await page.EvaluateExpressionAsync(Scripts.Utils).ConfigureAwait(false);
     }
 
     /// <summary>
