@@ -12,7 +12,9 @@ public static class Stealth {
     /// <param name="page"></param>
     /// <returns></returns>
     public static async Task RegisterUtilsAsync(IPage page) {
+        // Utils script is idempotent, keep this function as it
         await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Utils).ConfigureAwait(false);
+        await page.EvaluateExpressionAsync(Scripts.Utils).ConfigureAwait(false);
     }
 
     /// <summary>
