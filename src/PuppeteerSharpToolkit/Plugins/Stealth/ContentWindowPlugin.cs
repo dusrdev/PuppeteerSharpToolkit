@@ -18,7 +18,6 @@ public class ContentWindowPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.ContentWindow).ConfigureAwait(false);
-            await page.EvaluateExpressionAsync(Scripts.ContentWindow).ConfigureAwait(false);
         }
     }
 }

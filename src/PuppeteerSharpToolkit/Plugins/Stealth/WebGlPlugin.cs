@@ -29,7 +29,6 @@ public class WebGlPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateFunctionOnNewDocumentAsync(Scripts.WebGL, _options.Vendor, _options.Renderer).ConfigureAwait(false);
-            await page.EvaluateFunctionAsync(Scripts.WebGL, _options.Vendor, _options.Renderer).ConfigureAwait(false);
         }
     }
 }

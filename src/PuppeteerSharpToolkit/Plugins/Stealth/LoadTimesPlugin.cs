@@ -15,7 +15,6 @@ public class LoadTimesPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.LoadTimes).ConfigureAwait(false);
-            await page.EvaluateExpressionAsync(Scripts.LoadTimes).ConfigureAwait(false);
         }
     }
 }

@@ -15,7 +15,6 @@ public class ChromeAppPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.ChromeApp).ConfigureAwait(false);
-            await page.EvaluateExpressionAsync(Scripts.ChromeApp).ConfigureAwait(false);
         }
     }
 }
