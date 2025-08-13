@@ -39,4 +39,19 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Show README on NuGet page -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- Populate NuGet release notes from local file -->
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('ReleaseNotes.md'))</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <!-- Include README from repo root and ReleaseNotes in the package -->
+  <ItemGroup>
+    <!-- Bring root README.md into the package and project (linked file) -->
+    <None Include="../../README.md" Pack="true" PackagePath="/" Link="README.md" />
+    <!-- Include ReleaseNotes.md in the package root -->
+    <None Include="ReleaseNotes.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
 </Project>
