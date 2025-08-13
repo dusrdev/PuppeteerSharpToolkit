@@ -78,9 +78,9 @@ public static partial class Stealth {
                     return false;
                 }
                 var message = puppeteerException.Message;
-                return message.Contains("Execution context was destroyed")
-                    || message.Contains("Cannot find context with specified id")
-                    || message.Contains("Target closed");
+                return message.Contains("Execution context was destroyed", StringComparison.OrdinalIgnoreCase)
+                    || message.Contains("Cannot find context with specified id", StringComparison.OrdinalIgnoreCase)
+                    || message.Contains("Target closed", StringComparison.OrdinalIgnoreCase);
             }
 
             static async Task InjectWithRetryAsync(IFrame frame, string script, int attempts = 5, int initialDelayMs = 25) {
