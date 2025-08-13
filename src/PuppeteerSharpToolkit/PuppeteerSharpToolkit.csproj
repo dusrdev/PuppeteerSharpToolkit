@@ -43,7 +43,9 @@
     <!-- Show README on NuGet page -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- Populate NuGet release notes from local file -->
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('ReleaseNotes.txt'))</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - Initial release
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <!-- Include README from repo root and ReleaseNotes in the package -->
