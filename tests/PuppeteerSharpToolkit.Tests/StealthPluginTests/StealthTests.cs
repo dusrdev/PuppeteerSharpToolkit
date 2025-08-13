@@ -1,4 +1,6 @@
-﻿using PuppeteerSharpToolkit.Plugins;
+﻿using System.Net;
+
+using PuppeteerSharpToolkit.Plugins;
 using PuppeteerSharpToolkit.Plugins.Recaptcha;
 
 namespace PuppeteerSharpToolkit.Tests.StealthPluginTests;
@@ -72,6 +74,18 @@ public class StealthTests {
             var plugins = await page.EvaluateExpressionAsync<int>("navigator.plugins.length");
             Assert.NotEqual(0, plugins);
         }
+    }
+
+    [Fact]
+    public async Task UtilsRegistration_DoesNot_DestroyExecutionContext() {
+        var manager = new PluginManager();
+        manager.Register(Stealth.GetStandardEvasions());
+        await using var browser = await manager.LaunchAsync();
+        await using var page = await browser.NewPageAsync();
+
+        var response = await page.GoToAsync("https://www.google.com/");
+        Assert.NotNull(response);
+        Assert.Equal(HttpStatusCode.OK, response.Status);
     }
 
     [Fact]
