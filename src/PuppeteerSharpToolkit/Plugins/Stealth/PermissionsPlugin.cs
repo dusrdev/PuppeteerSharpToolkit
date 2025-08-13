@@ -2,6 +2,8 @@
 
 namespace PuppeteerSharpToolkit.Plugins;
 
+//TODO: fix execution context destroy
+
 /// <summary>
 /// Adjusts Permissions API behavior to reflect realistic states for HTTP/HTTPS origins.
 /// </summary>
@@ -15,7 +17,6 @@ public class PermissionsPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Permissions).ConfigureAwait(false);
-            await page.EvaluateExpressionAsync(Scripts.Permissions).ConfigureAwait(false);
         }
     }
 }

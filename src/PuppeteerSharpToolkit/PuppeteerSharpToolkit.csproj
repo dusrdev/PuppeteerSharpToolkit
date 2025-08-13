@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.0-rc.1</Version>
+    <Version>0.1.0-rc.2</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Nullable>enable</Nullable>
 
@@ -43,7 +43,9 @@
     <!-- Show README on NuGet page -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- Populate NuGet release notes from local file -->
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('ReleaseNotes.txt'))</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - Initial release
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <!-- Include README from repo root and ReleaseNotes in the package -->

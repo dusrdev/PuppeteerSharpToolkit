@@ -15,7 +15,6 @@ public class CodecPlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
             var page = await target.PageAsync().ConfigureAwait(false);
             await Stealth.RegisterUtilsAsync(page);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Codec).ConfigureAwait(false);
-            await page.EvaluateExpressionAsync(Scripts.Codec).ConfigureAwait(false);
         }
     }
 }

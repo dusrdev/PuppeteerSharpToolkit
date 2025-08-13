@@ -14,7 +14,6 @@ public class StackTracePlugin : PuppeteerPlugin, IOnTargetCreatedPlugin {
         if (target.Type == TargetType.Page) {
             var page = await target.PageAsync().ConfigureAwait(false);
             await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Stacktrace).ConfigureAwait(false);
-            await page.EvaluateExpressionAsync(Scripts.Stacktrace).ConfigureAwait(false);
         }
     }
 }
