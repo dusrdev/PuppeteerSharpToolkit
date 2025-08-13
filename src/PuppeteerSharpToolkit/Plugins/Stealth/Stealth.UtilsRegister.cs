@@ -1,5 +1,4 @@
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -15,22 +14,23 @@ public static partial class Stealth {
     /// <returns></returns>
     public static Task RegisterUtilsAsync(IPage page) {
         return UtilsRegister.RegisterAsync(page);
-        // Utils script is idempotent, keep this function as it
-        // await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Utils).ConfigureAwait(false);
-        // await page.EvaluateExpressionAsync(Scripts.Utils).ConfigureAwait(false);
     }
 
     private static class UtilsRegister {
-        private static readonly ConcurrentDictionary<IPage, SemaphoreSlim> Locks = [];
+        private static readonly ConditionalWeakTable<IPage, SemaphoreSlim> Locks = [];
         private static readonly ConditionalWeakTable<IPage, RegisteredState> Register = [];
         private sealed class RegisteredState { public bool BackfillDone; }
 
         internal static async Task RegisterAsync(IPage page) {
-            var @lock = Locks.GetOrAdd(page, _ => new(1, 1));
-            await @lock.WaitAsync();
+            var @lock = Locks.GetValue(page, _ => new SemaphoreSlim(1, 1));
+            await @lock.WaitAsync().ConfigureAwait(false);
             try {
+                // Ensure all future documents/frames get utils.js automatically
+                await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Utils).ConfigureAwait(false);
+
                 var state = Register.GetOrCreateValue(page);
                 if (!state.BackfillDone) {
+                    // Backfill current frames once
                     var count = page.Frames.Length;
                     var buffer = ArrayPool<IFrame>.Shared.Rent(count);
                     try {
@@ -78,9 +78,9 @@ public static partial class Stealth {
                     return false;
                 }
                 var message = puppeteerException.Message;
-                return message.Contains("Execution context was destroyed", StringComparison.OrdinalIgnoreCase)
-                    || message.Contains("Cannot find context with specified id", StringComparison.OrdinalIgnoreCase)
-                    || message.Contains("Target closed", StringComparison.OrdinalIgnoreCase);
+                return message.IndexOf("Execution context was destroyed", StringComparison.OrdinalIgnoreCase) >= 0
+                    || message.IndexOf("Cannot find context with specified id", StringComparison.OrdinalIgnoreCase) >= 0
+                    || message.IndexOf("Target closed", StringComparison.OrdinalIgnoreCase) >= 0;
             }
 
             static async Task InjectWithRetryAsync(IFrame frame, string script, int attempts = 5, int initialDelayMs = 25) {
