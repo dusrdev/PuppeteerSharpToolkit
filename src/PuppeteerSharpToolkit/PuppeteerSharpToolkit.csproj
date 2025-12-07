@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Nullable>enable</Nullable>
-
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
@@ -15,7 +15,6 @@
     <Authors>David Shnayder</Authors>
     <Copyright>David Shnayder</Copyright>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-
     <PackageId>PuppeteerSharpToolkit</PackageId>
     <Title>PuppeteerSharpToolkit</Title>
     <AssemblyName>PuppeteerSharpToolkit</AssemblyName>
@@ -30,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PuppeteerSharp" Version="20.2.2" />
+    <PackageReference Include="PuppeteerSharp" Version="20.2.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,7 +43,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- Populate NuGet release notes from local file -->
     <PackageReleaseNotes>
-      - Initial release
+      - Update `PuppeteerSharp` to 20.2.4
     </PackageReleaseNotes>
   </PropertyGroup>
 
