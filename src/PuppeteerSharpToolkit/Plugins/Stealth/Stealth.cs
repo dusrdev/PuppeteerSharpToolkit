@@ -5,18 +5,7 @@ namespace PuppeteerSharpToolkit.Plugins;
 /// <summary>
 /// Stealth is a static class that provides utilities to use in stealth related plugins
 /// </summary>
-public static class Stealth {
-    /// <summary>
-    /// Idempotent-ly registers utils.js (will not throw exception if it already exists)
-    /// </summary>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    public static async Task RegisterUtilsAsync(IPage page) {
-        // Utils script is idempotent, keep this function as it
-        await page.EvaluateExpressionOnNewDocumentAsync(Scripts.Utils).ConfigureAwait(false);
-        await page.EvaluateExpressionAsync(Scripts.Utils).ConfigureAwait(false);
-    }
-
+public static partial class Stealth {
     /// <summary>
     /// Contracts for creating the standard evasion plugins
     /// </summary>
